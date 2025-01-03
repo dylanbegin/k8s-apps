@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - resources/ns.yml
+  - resources/postgres-secret.yml
+  - resources/postgres-deployment.yml
+  - resources/mariadb-secret.yml
+  - resources/mariadb-deployment.yml
+  - resources/pgadmin-secret.yml
+  - resources/pgadmin-secret-oidc.yml
+  - resources/pgadmin-cm-prefs.yml
+  - resources/pgadmin-cm-servers.yml
+  - resources/pgadmin-deployment.yml
+  - resources/pgadmin-ingress.yml

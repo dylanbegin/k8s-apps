@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: transmission-data-nfs
+spec:
+  storageClassName: transmission-data-nfs
+  nfs:
+    server: 10.10.10.31
+    path: /mnt/zpool/ark/data/torrents
+  mountOptions:
+    - nfsvers=4
+    - async
+    - soft
+    - nolock
+  capacity:
+    storage: 2Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prowlarr-data-nfs
+spec:
+  storageClassName: prowlarr-data-nfs
+  nfs:
+    server: 10.10.10.31
+    path: /mnt/zpool/ark/data
+  mountOptions:
+    - nfsvers=4
+    - async
+    - soft
+    - nolock
+  capacity:
+    storage: 2Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: lidarr-data-nfs
+spec:
+  storageClassName: lidarr-data-nfs
+  nfs:
+    server: 10.10.10.31
+    path: /mnt/zpool/ark/data
+  mountOptions:
+    - nfsvers=4
+    - async
+    - soft
+    - nolock
+  capacity:
+    storage: 2Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: radarr-data-nfs
+spec:
+  storageClassName: radarr-data-nfs
+  nfs:
+    server: 10.10.10.31
+    path: /mnt/zpool/ark/data
+  mountOptions:
+    - nfsvers=4
+    - async
+    - soft
+    - nolock
+  capacity:
+    storage: 2Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sonarr-data-nfs
+spec:
+  storageClassName: sonarr-data-nfs
+  nfs:
+    server: 10.10.10.31
+    path: /mnt/zpool/ark/data
+  mountOptions:
+    - nfsvers=4
+    - async
+    - soft
+    - nolock
+  capacity:
+    storage: 2Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete

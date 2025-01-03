@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pgadmin-cm-servers
+  namespace: databases
+data:
+  servers.json: |
+    {
+     "Servers": {
+       "1": {
+         "Name": "Primary PostgreSQL Database",
+         "Group": "Servers",
+         "Port": 5432,
+         "Username": "svcpostgres",
+         "Host": "postgres.databases.svc.cluster.local",
+         "SSLMODE": "disable",
+         "MaintenanceDB": "postgres"
+       }
+     }
+    }

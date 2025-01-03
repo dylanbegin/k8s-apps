@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: snipeit-cm-php
+  namespace: snipeit
+data:
+  php-local.ini: |
+    upload_max_filesize = 524M
+    post_max_size = 524M
+    memory_limit = 524M

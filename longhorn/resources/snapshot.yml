@@ -1,0 +1,17 @@
+apiVersion: longhorn.io/v1beta1
+kind: RecurringJob
+metadata:
+  name: snapshot-short
+  namespace: longhorn-system
+spec:
+  # hourly snapshot incase I derp
+  # retain last 6 hours
+  cron: "0 * * * *"
+  task: "snapshot"
+  groups:
+  - default
+  retain: 6
+  concurrency: 2
+  labels:
+    type: 'snap'
+    schedule: 'short'

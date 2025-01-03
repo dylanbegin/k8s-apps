@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: nextcloud
+
+resources:
+  - resources/ns.yml
+  - resources/secret.yml
+  - resources/ingress.yml
+
+helmCharts:
+  - name: nextcloud
+    repo: https://nextcloud.github.io/helm/
+    version: 6.5.2
+    releaseName: "nextcloud"
+    namespace: nextcloud
+    includeCRDs: true
+    valuesFile: values.yml

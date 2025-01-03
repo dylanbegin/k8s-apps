@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: snipeit-config-pvc
+  namespace: snipeit
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-ssd
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: snipeit
+  namespace: snipeit
+  labels:
+    app: snipeit
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: snipeit
+  template:
+    metadata:
+      labels:
+        app: snipeit
+    spec:
+      containers:
+        - name: snipeit
+          image: lscr.io/linuxserver/snipe-it:7.1.15
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 443
+              name: https
+              protocol: TCP
+          volumeMounts:
+            - name: snipeit-config
+              mountPath: /config
+            - name: snipeit-cm-php
+              mountPath: /config/php/php-local.ini
+              subPath: php-local.ini
+              readOnly: true
+          env:
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: snipeit-user
+                  key: snipeit-username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: snipeit-user
+                  key: snipeit-password
+            - name: MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: snipeit-user
+                  key: snipeit-email
+            - name: MAIL_FROM_ADDR
+              valueFrom:
+                secretKeyRef:
+                  name: snipeit-user
+                  key: snipeit-email
+            - name: MAIL_REPLYTO_ADDR
+              valueFrom:
+                secretKeyRef:
+                  name: snipeit-user
+                  key: snipeit-email
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: snipeit-user
+                  key: snipeit-emailapi
+          envFrom:
+            - configMapRef:
+                name: snipeit-cm-env
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 4
+              memory: 2Gi
+      volumes:
+        - name: snipeit-config
+          persistentVolumeClaim:
+            claimName: snipeit-config-pvc
+        - name: snipeit-cm-php
+          configMap:
+            name: snipeit-cm-php
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: snipeit-https
+  namespace: snipeit
+spec:
+  selector:
+    app: snipeit
+  ports:
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 443
+  type: ClusterIP

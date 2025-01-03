@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - resources/ns.yml
+  - resources/secret.yml
+  - resources/pvc.yml
+  - resources/ingress.yml
+  - resources/middleware.yml
+
+helmCharts:
+  - name: authentik
+    repo: https://charts.goauthentik.io/
+    version: 2024.10.4
+    releaseName: "authentik"
+    namespace: authentik
+    includeCRDs: true
+    valuesFile: values.yml

@@ -1,0 +1,10 @@
+defaultSettings:
+  allowCollectingLonghornUsageMetrics: false
+  storageReservedPercentageForDefaultDisk: 20
+  defaultDataPath: "/var/lib/longhorn"
+  backupTarget: "nfs://10.10.10.31:/mnt/zpool/ark/longhorn"
+preUpgradeChecker:
+  jobEnabled: false
+# define our own storageclass
+persistence:
+  defaultClass: false

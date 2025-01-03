@@ -1,0 +1,66 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cert-tor-io
+  namespace: servarr
+spec:
+  secretName: cert-tor-io
+  issuerRef:
+    name: le-prod
+    kind: ClusterIssuer
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 384
+  commonName: "tor.cryogence.io"
+  dnsNames:
+  - "tor.cryogence.io"
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: headers-tor
+  namespace: servarr
+spec:
+  headers:
+    accessControlAllowMethods: ['GET', 'OPTIONS', 'PUT', 'POST', 'PATCH']
+    accessControlMaxAge: 100
+    browserXssFilter: true
+    contentSecurityPolicy: "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';"
+    contentTypeNosniff: true
+    customFrameOptionsValue: SAMEORIGIN
+    customRequestHeaders:
+      X-Forwarded-Proto: https
+    customResponseHeaders:
+      X-Robots-Tag: none,noarchive,nosnippet,notranslate,noimageindex
+    permissionsPolicy: "camera 'none'; geolocation 'none'; microphone 'none'; payment 'none'; usb 'none'; vr 'none';"
+    forceSTSHeader: true
+    frameDeny: true
+    sslRedirect: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 15552000
+    referrerPolicy: no-referrer
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: transmission-webui
+  namespace: servarr
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`tor.cryogence.io`)
+      services:
+        - name: transmission
+          port: 9091
+          scheme: http
+      middlewares:
+        - name: headers-tor
+          namespace: servarr
+        - name: headers-authfwd
+          namespace: authentik
+  tls:
+    secretName: cert-tor-io

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: codeserver-cm-env
+  namespace: codeserver
+data:
+  TZ: "America/Los_Angeles"
+  PROXY_DOMAIN: "code.cryogence.io"
+  DEFAULT_WORKSPACE: "/data"

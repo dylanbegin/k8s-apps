@@ -1,0 +1,17 @@
+replicaCount: 1
+image:
+  repository: portainer/portainer-ce
+  tag: 2.21.2-alpine
+#resources:
+#  requests:
+#    cpu: 100m
+#    memory: 128Mi
+#  limits:
+#    cpu: 2
+#    memory: 1Gi
+service:
+  type: ClusterIP
+persistence:
+  enabled: true
+  size: 10Gi
+  storageClass: longhorn-ssd

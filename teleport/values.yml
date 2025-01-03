@@ -1,0 +1,44 @@
+clusterName: "teleport"
+global:
+  clusterDomain: cluster.local
+proxy:
+  teleportConfig:
+    proxy_service:
+      enabled: true
+      web_listen_addr: 0.0.0.0:3080 #web ui
+      listen_addr: 0.0.0.0:3023 #ssh cli
+      https_keypairs: []
+      trust_x_forwarded_for: true
+auth:
+  teleportConfig:
+    auth_service:
+      enabled: true
+      listen_addr: 0.0.0.0:3025
+      proxy_checks_host_keys: "yes"
+authentication:
+  type: local
+  localAuth: true
+  secondFactor: otp
+proxyListenerMode: multiplex
+sessionRecording: proxy
+publicAddr: ['ssh.cryogence.io:443']
+sshPublicAddr: ssh.cryogence.io:3023
+acme: false
+operator:
+  enabled: false
+highAvailability:
+  replicaCount: 1
+log:
+  level: INFO
+  output: stderr
+  format: text
+service:
+  type: ClusterIP
+imagePullPolicy: IfNotPresent
+resources:
+  request:
+    cpu: 200m
+    memory: 128Mi
+  limits:
+    cpu: 8
+    memory: 8Gi

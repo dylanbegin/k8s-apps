@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: navidrome-cm-env
+  namespace: navidrome
+data:
+  ND_LOGLEVEL: "info"
+  ND_DEFAULTTHEME: "Spotify-ish"
+  ND_SCANSCHEDULE: "@hourly"
+  ND_ENABLEDOWNLOADS: "true"
+  #ND_IMAGECACHESIZE: "100MB"
+  #ND_TRANSCODINGCACHESIZE: "100MB"
+  ND_UIWELCOMEMESSAGE: "MANAGED PRIVATE SYSTEM: This system is for OFFICIAL USE only by authorized personnel. Unauthorized access, unauthorized attempted access, or unauthorized use of the system is a violation of both State and Federal law and may be subject to prosecution action. Any or all use of this system may be monitored, recorded, copied, inspected, and disclosed to authorized personnel. BY CONTINUING USE YOU ACCEPT THIS POLICY"
+  ND_REVERSEPROXYWHITELIST: "10.244.0.0/16,10.96.0.0/12"
+  ND_REVERSEPROXYUSERHEADER: "X-authentik-username"
+  ND_LASTFM_ENABLED: "true"
+  ND_LASTFM_LANGUAGE: "en"
+  ND_AUTOIMPORTPLAYLISTS: "true"
+  ND_PLAYLISTSPATH: ".:**/**"

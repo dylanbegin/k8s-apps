@@ -1,0 +1,78 @@
+replicaCount: 1
+clusterDomain: cluster.local
+global:
+  storageClass: longhorn-ssd
+strategy:
+  type: "Recreate"
+service:
+  http:
+    type: ClusterIP
+    port: 3000
+    clusterIP:
+  ssh:
+    type: ClusterIP
+    port: 22
+ingress: # setup with traefik
+  enabled: false
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 4
+    memory: 4Gi
+gitea:
+  admin:
+    existingSecret: gitea-ess
+  config:
+    RUN_MODE: "prod"
+    APP_NAME: "Cryogence Git"
+    server:
+      DOMAIN: "git.cryogence.io"
+      ROOT_URL: "https://git.cryogence.io/"
+    database:
+      DB_TYPE: "postgres"
+      HOST: "postgres.databases.svc.cluster.local:5432"
+      NAME: "gitea"
+    # to allow local git mirror
+    migrations:
+      ALLOW_LOCALNETWORKS: "true"
+  additionalConfigFromEnvs:
+    - name: GITEA__DATABASE__USER
+      valueFrom:
+        secretKeyRef:
+          name: gitea-ess
+          key: username
+    - name: GITEA__DATABASE__PASSWD
+      valueFrom:
+        secretKeyRef:
+          name: gitea-ess
+          key: password
+persistence:
+  enabled: true
+  size: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClass: longhorn-ssd
+redis-cluster:
+  enabled: false
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+  global:
+    redis:
+      password: ""
+    storageClass: longhorn-ssd
+  master:
+    count: 1
+    persistence:
+      enabled: true
+      size: 2Gi
+postgresql-ha:
+  enabled: false
+postgresql:
+  enabled: false
+test:
+  enabled: false

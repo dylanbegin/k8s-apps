@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: freshrss-cm-env
+  namespace: freshrss
+data:
+  TZ: "America/Los_Angeles"
+  FRESHRSS_ENV: "production"
+  TRUSTED_PROXY: "10.244.0.0/16 10.96.0.0/12"
+  BASE_URL: "https://rss.cryogence.io"
+  OIDC_ENABLED: "1"
+  OIDC_X_FORWARDED_HEADERS: "X-Forwarded-Port X-Forwarded-Proto X-Forwarded-Host"
+  OIDC_SCOPES: "openid email profile"
+  #OIDC_REMOTE_USER_CLAIM: "preferred_username"

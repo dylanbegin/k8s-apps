@@ -1,0 +1,109 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pgadmin-pvc
+  namespace: databases
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-ssd
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin
+  namespace: databases
+  labels:
+    app: pgadmin
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      labels:
+        app: pgadmin
+    spec:
+      securityContext:
+        runAsUser: 5050
+        runAsGroup: 5050
+        fsGroup: 5050
+      containers:
+        - name: pgadmin
+          image: dpage/pgadmin4:8.14.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - name: pgadmin-data
+              mountPath: /var/lib/pgadmin
+            - name: pgadmin-oidc
+              mountPath: /pgadmin4/config_local.py
+              subPath: config_local.py
+              readOnly: true
+            - name: pgadmin-cm-servers
+              mountPath: /pgadmin4/servers.json
+              subPath: servers.json
+              readOnly: true
+            - name: pgadmin-cm-prefs
+              mountPath: /pgadmin4/preferences.json
+              subPath: preferences.json
+              readOnly: true
+          env:
+            - name: PGADMIN_LISTEN_ADDRESS
+              value: "0.0.0.0"
+            - name: PGADMIN_LISTEN_PORT
+              value: "80"
+            - name: PGADMIN_DEFAULT_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: pgadmin-user
+                  key: pgadmin-email
+            - name: PGADMIN_DEFAULT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgadmin-user
+                  key: pgadmin-password
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 2
+              memory: 1Gi
+      volumes:
+        - name: pgadmin-data
+          persistentVolumeClaim:
+            claimName: pgadmin-pvc
+        - name: pgadmin-oidc
+          secret:
+            secretName: pgadmin-oidc
+        - name: pgadmin-cm-servers
+          configMap:
+            name: pgadmin-cm-servers
+        - name: pgadmin-cm-prefs
+          configMap:
+            name: pgadmin-cm-prefs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgadmin
+  namespace: databases
+spec:
+  selector:
+    app: pgadmin
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  type: ClusterIP

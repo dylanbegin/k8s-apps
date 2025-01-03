@@ -1,0 +1,131 @@
+image:
+  flavor: fpm-alpine
+replicaCount: 1
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+  global:
+    storageClass: longhorn-ssd
+  master:
+    persistence:
+      size: 2Gi
+nginx:
+  enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 2
+      memory: 1Gi
+nextcloud:
+  host: drive.cryogence.io
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-user
+    usernameKey: nextcloud-username
+    passwordKey: nextcloud-password
+  phpClientHttpsFix:
+    enabled: true
+    protocol: https
+  trustedDomains:
+    - "drive.cryogence.io"
+    - "nextcloud"
+    - "nextcloud.nextcloud.svc.cluster.local"
+  configs:
+    base.config.php: |-
+      <?php
+      $CONFIG = array (
+        'default_locale' => 'en_US',
+        'default_phone_region' => 'US',
+        'trusted_proxies' => array (
+          0 => '127.0.0.1',
+          1 => '10.244.0.0/16',
+          2 => '10.96.0.0/12',
+        ),
+        'forwarded_for_headers' => array (
+          0 => 'HTTP_X_FORWARDED_FOR',
+          1 => 'HTTP_CF_CONNECTING_IP',
+        ),
+        'overwriteprotocol' => 'https',
+        'allow_local_remote_servers' => true,
+        'maintenance_window_start' => 1,
+        'loglevel' => 1,
+        'filelocking.enabled' => true,
+      );
+    previews.config.php: |-
+      <?php
+      $CONFIG = array (
+        'enable_previews' => true,
+        'enabledPreviewProviders' => array (
+          'OC\Preview\BMP',
+          'OC\Preview\GIF',
+          'OC\Preview\HEIC',
+          'OC\Preview\JPEG',
+          'OC\Preview\Krita',
+          'OC\Preview\MarkDown',
+          'OC\Preview\Movie',
+          'OC\Preview\MP3',
+          'OC\Preview\OpenDocument',
+          'OC\Preview\PDF',
+          'OC\Preview\PNG',
+          'OC\Preview\SVG',
+          'OC\Preview\TXT',
+          'OC\Preview\XBitmap',
+        ),
+      );
+  phpConfigs:
+    zz-base_config.ini: |-
+      date.timezone=America/Los_Angeles
+      apc.enable_cli=1
+      redis.session.locking_enabled=1
+      redis.session.lock_retries=-1
+      redis.session.lock_wait_time=10000
+      upload_max_filesize=1G
+      post_max_size=1G
+      output_buffering=0
+internalDatabase:
+  enabled: false
+externalDatabase:
+  enabled: true
+  type: postgresql
+  host: postgres.databases.svc.cluster.local
+  database: nextcloud
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-user
+    usernameKey: nextcloud-username
+    passwordKey: nextcloud-password
+persistence:
+  enabled: true
+  storageClass: longhorn-ssd
+  size: 10Gi
+  nextcloudData:
+    enabled: true
+    storageClass: longhorn-ssd #nextcloud-data-nfs
+    #accessMode: ReadWriteMany
+    size: 100Gi
+resources:
+  requests:
+    cpu: 200m
+    memory: 128Mi
+  limits:
+    cpu: 4
+    memory: 6Gi
+cronjob:
+  enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 1
+      memory: 1Gi
+#livenessProbe:
+#  initialDelaySeconds: 7200
+#readinessProbe:
+#  initialDelaySeconds: 7200
+#startupProbe:
+#  initialDelaySeconds: 7200

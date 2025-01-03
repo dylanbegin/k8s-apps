@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - resources/ns.yml
+  - resources/secret.yml
+  - resources/le-staging.yml
+  - resources/le-prod.yml
+
+helmCharts:
+  - name: cert-manager
+    repo: https://charts.jetstack.io
+    version: 1.16.2
+    releaseName: "cert-manager"
+    namespace: cert-manager
+    includeCRDs: true
+    valuesFile: values.yml
+
+# argocd fix by HariSekhon
+# https://github.com/HariSekhon/Kubernetes-configs/blob/f82b5d0bdb0f64bbe3af2de7ca261aec1387e8f4/cert-manager/base/kustomization.yaml
+# ref: https://github.com/argoproj/argo-cd/issues/6728
+patches:
+  - path: ./resources/rm-instance-label.yml
+    target:
+      kind: CustomResourceDefinition
+      labelSelector: app.kubernetes.io/instance=cert-manager

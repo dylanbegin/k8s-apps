@@ -1,0 +1,117 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: navidrome-data-pvc
+  namespace: navidrome
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-ssd
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: navidrome-music-nfs
+  namespace: navidrome
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: navidrome-music-nfs
+  resources:
+    requests:
+      storage: 500Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: navidrome
+  namespace: navidrome
+  labels:
+    app: navidrome
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: navidrome
+  template:
+    metadata:
+      labels:
+        app: navidrome
+    spec:
+      containers:
+        - name: navidrome
+          image: deluan/navidrome:0.54.3
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4533
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - name: navidrome-data
+              mountPath: /data
+            - name: navidrome-music
+              mountPath: /music
+              readOnly: true
+          env:
+            - name: ND_BASEURL
+              valueFrom:
+                secretKeyRef:
+                  name: navidrome-secrets
+                  key: navidrome-baseurl
+            - name: ND_SPOTIFY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: navidrome-secrets
+                  key: navidrome-spotify-id
+            - name: ND_SPOTIFY_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: navidrome-secrets
+                  key: navidrome-spotify-secret
+            - name: ND_LASTFM_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: navidrome-secrets
+                  key: navidrome-lastfm-apikey
+            - name: ND_LASTFM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: navidrome-secrets
+                  key: navidrome-lastfm-secret
+          envFrom:
+            - configMapRef:
+                name: navidrome-cm-env
+          resources:
+            requests:
+              cpu: 200m
+              memory: 128Mi
+            limits:
+              cpu: 4
+              memory: 4Gi
+      volumes:
+        - name: navidrome-data
+          persistentVolumeClaim:
+            claimName: navidrome-data-pvc
+        - name: navidrome-music
+          persistentVolumeClaim:
+            claimName: navidrome-music-nfs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: navidrome
+  namespace: navidrome
+spec:
+  selector:
+    app: navidrome
+  ports:
+    - name: http
+      port: 4533
+      protocol: TCP
+      targetPort: 4533
+  type: ClusterIP

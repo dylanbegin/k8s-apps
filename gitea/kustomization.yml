@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: gitea
+
+resources:
+  - resources/ns.yml
+  - resources/secret.yml
+  - resources/ingress.yml
+
+helmCharts:
+  - name: gitea
+    repo: https://dl.gitea.io/charts
+    version: 10.6.0
+    releaseName: "gitea"
+    namespace: gitea
+    includeCRDs: true
+    valuesFile: values.yml

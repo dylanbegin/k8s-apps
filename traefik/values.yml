@@ -1,0 +1,74 @@
+globalArguments:
+  - "--global.sendanonymoususage=false"
+  - "--global.checknewversion=false"
+additionalArguments:
+  - "--serversTransport.insecureSkipVerify=true"
+  - "--log.level=INFO"
+deployment:
+  enabled: true
+  replicas: 2
+gateway:
+  enabled: false
+gatewayclass:
+  enabled: false
+ports:
+  web:
+    port: 8000
+    expose:
+      default: true
+    exposedPort: 80
+    protocol: TCP
+    redirectTo:
+      port: websecure
+      priority: 10
+  websecure:
+    port: 8443
+    expose:
+      default: true
+    exposedPort: 443
+    protocol: TCP
+    http3:
+      enabled: true
+      advertisedPort: 4443
+    tls:
+      enabled: true
+#tlsoption currently does not apply to authentik outpost.
+#throws traefik warnings and falls back to default option.
+#tlsOptions:
+#  tls13only:
+#    labels: {}
+#    minVersion: VersionTLS13
+#    maxVersion: VersionTLS13
+#    #curvePreferences:
+#    #  - CurveP521
+#    #  - CurveP384
+#    cipherSuites:
+#      - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+#      - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+#      - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+#      - TLS_AES_128_GCM_SHA256
+#      - TLS_AES_256_GCM_SHA384
+#      - TLS_CHACHA20_POLY1305_SHA256
+#    sniStrict: true
+ingressRoute:
+  dashboard:
+    enabled: false
+providers:
+  kubernetesCRD:
+    enabled: true
+    allowExternalNameServices: true
+    allowCrossNamespace: true #req for authentik
+  kubernetesIngress:
+    enabled: true
+    allowExternalNameServices: true
+    publishedService:
+      enabled: true
+logs:
+  general:
+    level: INFO
+rbac:
+  enabled: true
+service:
+  enabled: true
+  type: LoadBalancer
+  annotations: {"io.cilium/lb-ipam-ips": "10.10.10.100"}

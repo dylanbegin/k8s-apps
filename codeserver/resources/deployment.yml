@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: codeserver-config-pvc
+  namespace: codeserver
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-ssd
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: codeserver-data-pvc
+  namespace: codeserver
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-ssd
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codeserver
+  namespace: codeserver
+  labels:
+    app: codeserver
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: codeserver
+  template:
+    metadata:
+      labels:
+        app: codeserver
+    spec:
+      containers:
+        - name: codeserver
+          image: lscr.io/linuxserver/code-server:4.96.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8443
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - name: codeserver-config
+              mountPath: /config
+            - name: codeserver-data
+              mountPath: /data
+          envFrom:
+            - configMapRef:
+                name: codeserver-cm-env
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 2
+              memory: 1Gi
+      volumes:
+        - name: codeserver-config
+          persistentVolumeClaim:
+            claimName: codeserver-config-pvc
+        - name: codeserver-data
+          persistentVolumeClaim:
+            claimName: codeserver-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: codeserver
+  namespace: codeserver
+spec:
+  selector:
+    app: codeserver
+  ports:
+    - name: http
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+  type: ClusterIP

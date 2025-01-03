@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  # build project
+  - resources/project.yml
+  - resources/configmap.yml
+  # build infrastructure apps and sync wave
+  - infra/nvdp.yml             #10
+  - infra/external-secrets.yml #30
+  - infra/cert-manager.yml     #40
+  - infra/traefik.yml          #50
+  - infra/longhorn.yml         #60
+  - infra/databases.yml        #70
+  - infra/unifi.yml            #80
+  #- infra/portainer.yml        #90
+  # build applications and sync wave
+  - apps/vaultwarden.yml       #1000
+  - apps/authentik.yml         #1010
+  - apps/gitea.yml             #1020
+  - apps/nextcloud.yml         #1030
+  - apps/snipeit.yml           #1040
+  - apps/codeserver.yml        #1050
+  - apps/freshrss.yml          #1060
+  - apps/hassos.yml            #1070
+  - apps/navidrome.yml         #1080
+  - apps/wikijs.yml            #1090
+  - apps/jellyfin.yml          #1100
+  - apps/servarr.yml           #1110
+  - apps/dashy.yml             #1120

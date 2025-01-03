@@ -1,0 +1,80 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cert-fwl-io
+  namespace: traefik
+spec:
+  secretName: cert-fwl-io
+  issuerRef:
+    name: le-prod
+    kind: ClusterIssuer
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 384
+  commonName: "fwl.cryogence.io"
+  dnsNames:
+  - "fwl.cryogence.io"
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: headers-fwl
+  namespace: traefik
+spec:
+  headers:
+    accessControlAllowMethods: ['GET', 'OPTIONS', 'PUT', 'POST', 'PATCH']
+    accessControlMaxAge: 100
+    browserXssFilter: true
+    contentSecurityPolicy: "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';"
+    contentTypeNosniff: true
+    customFrameOptionsValue: SAMEORIGIN
+    customRequestHeaders:
+      X-Forwarded-Proto: https
+    customResponseHeaders:
+      X-Robots-Tag: none,noarchive,nosnippet,notranslate,noimageindex
+    permissionsPolicy: "camera 'none'; geolocation 'none'; microphone 'none'; payment 'none'; usb 'none'; vr 'none';"
+    forceSTSHeader: true
+    frameDeny: true
+    sslRedirect: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 15552000
+    referrerPolicy: no-referrer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opnsense
+  namespace: traefik
+spec:
+  externalName: fwl.cryogence.org
+  type: ExternalName
+  ports:
+  - name: websecure
+    port: 10443
+    targetPort: 10443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: opnsense-webui
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`fwl.cryogence.io`)
+      services:
+        - name: opnsense
+          port: 10443
+          passHostHeader: true
+          scheme: https
+      middlewares:
+        - name: headers-fwl
+          namespace: traefik
+        #- name: headers-authfwd
+        #  namespace: authentik
+  tls:
+    secretName: cert-fwl-io

@@ -1,0 +1,21 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterSecretStore
+metadata:
+  name: vault-backend
+  namespace: external-secrets
+spec:
+  provider:
+    vault:
+      server: "https://vault.cryogence.org:8200"
+      path: secrets-v2
+      version: v2
+      caProvider:
+        type: Secret
+        name: vault-ica
+        namespace: external-secrets
+        key: vault-ica-key
+      auth:
+        tokenSecretRef:
+          name: vault-token
+          namespace: external-secrets
+          key: token

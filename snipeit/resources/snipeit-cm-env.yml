@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: snipeit-cm-env
+  namespace: snipeit
+data:
+  # Sytem settings
+  #S6_READ_ONLY_ROOT: "1"
+  PUID: "1000"
+  PGID: "1000"
+  TZ: "America/Los_Angeles"
+  # BASIC APP SETTINGS
+  APP_ENV: "production"
+  APP_DEBUG: "false"
+  APP_URL: "https://sam.cryogence.io"
+  APP_FORCE_TLS: "true"
+  APP_CIPHER: "AES-256-CBC"
+  APP_TIMEZONE: "America/Los_Angeles"
+  APP_LOCALE: "en-US"
+  MAX_RESULTS: "500"
+  SESSION_DRIVER: "redis"
+  CACHE_DRIVER: "redis"
+  QUEUE_DRIVER: "sync"
+  ALLOW_DATA_PURGE: "true"
+  REQUIRE_SAML: "false"
+  # SECURITY HEADER SETTINGS
+  APP_TRUSTED_PROXIES: "10.0.0.0/8"
+  ALLOW_IFRAMING: "false"
+  REFERRER_POLICY: "same-origin"
+  ENABLE_CSP: "false"
+  CORS_ALLOWED_ORIGINS: "null"
+  ENABLE_HSTS: "true"
+  APP_ALLOW_INSECURE_HOSTS: "false"
+  SECURE_COOKIES: "true"
+  # DATABASE SETTINGS
+  DB_CONNECTION: "mysql"
+  DB_HOST: "mariadb.databases.svc.cluster.local"
+  DB_PORT: "3306"
+  DB_DATABASE: "snipeit"
+  DB_PREFIX: "null"
+  DB_DUMP_PATH: "/usr/bin"
+  DB_CHARSET: "utf8mb4"
+  DB_COLLATION: "utf8mb4_unicode_ci"
+  # REDIS SETTINGS
+  REDIS_HOST: "redis.snipeit.svc.cluster.local"
+  REDIS_PORT: "6379"
+  # OUTGOING MAIL SERVER SETTINGS
+  MAIL_DRIVER: "smtp"
+  MAIL_HOST: "smtp.gmail.com"
+  MAIL_PORT: "587"
+  MAIL_ENCRYPTION: "tls"
+  MAIL_FROM_NAME: "Snipe-IT"
+  MAIL_REPLYTO_NAME: "Snipe-IT"
+  MAIL_AUTO_EMBED: "true"
+  MAIL_AUTO_EMBED_METHOD: "base64"
+  # UPLOADED FILE STORAGE SETTINGS
+  PRIVATE_FILESYSTEM_DISK: "local"
+  PUBLIC_FILESYSTEM_DISK: "local_public"
+  # IMAGE LIBRARY
+  IMAGE_LIB: "gd"

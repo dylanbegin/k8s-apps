@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hassos-config-pvc
+  namespace: hassos
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-ssd
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hassos
+  namespace: hassos
+  labels:
+    app: hassos
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: hassos
+  template:
+    metadata:
+      labels:
+        app: hassos
+    spec:
+      containers:
+        - name: hassos
+          image: homeassistant/home-assistant:2024.12
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8123
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - name: hassos-config
+              mountPath: /config
+            - name: hassos-configuration
+              mountPath: /config/configuration.yaml
+              subPath: configuration.yaml
+              readOnly: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 4
+              memory: 4Gi
+      volumes:
+        - name: hassos-config
+          persistentVolumeClaim:
+            claimName: hassos-config-pvc
+        - name: hassos-configuration
+          secret:
+            secretName: hassos-configuration
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hassos
+  namespace: hassos
+spec:
+  selector:
+    app: hassos
+  ports:
+    - name: http
+      port: 8123
+      protocol: TCP
+      targetPort: 8123
+  type: ClusterIP

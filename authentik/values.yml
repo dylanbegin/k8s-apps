@@ -1,0 +1,85 @@
+global:
+  nameOverride: "authentik"
+  revisionHistoryLimit: 1
+  env:
+    - name: AUTHENTIK_REDIS__HOST
+      value: "authentik-redis-master"
+    - name: AUTHENTIK_REDIS__PORT
+      value: "6379"
+    - name: AUTHENTIK_POSTGRESQL__HOST
+      value: "postgres.databases.svc.cluster.local"
+    - name: AUTHENTIK_POSTGRESQL__PORT
+      value: "5432"
+    - name: AUTHENTIK_POSTGRESQL__NAME
+      value: "authentik"
+    - name: AUTHENTIK_LOG_LEVEL
+      value: "info"
+    - name: AUTHENTIK_BOOTSTRAP_EMAIL
+      valueFrom:
+        secretKeyRef:
+          name: authentik-user
+          key: authentik-email
+    - name: AUTHENTIK_BOOTSTRAP_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: authentik-user
+          key: authentik-password
+    - name: AUTHENTIK_BOOTSTRAP_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: authentik-user
+          key: authentik-api-key
+    - name: AUTHENTIK_SECRET_KEY
+      valueFrom:
+        secretKeyRef:
+          name: authentik-user
+          key: authentik-password
+    - name: AUTHENTIK_POSTGRESQL__USER
+      valueFrom:
+        secretKeyRef:
+          name: authentik-user
+          key: authentik-username
+    - name: AUTHENTIK_POSTGRESQL__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: authentik-user
+          key: authentik-password
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+redis:
+  enabled: true
+  global:
+    storageClass: longhorn-ssd
+#server:
+#  resources:
+#    requests:
+#      cpu: 100m
+#      memory: 128Mi
+#    limits:
+#      cpu: 2
+#      memory: 1Gi
+worker:
+  volumeMounts:
+    - name: authentik-media
+      mountPath: /media
+  volumes:
+    - name: authentik-media
+      persistentVolumeClaim:
+        claimName: authentik-media-pvc
+#  resources:
+#    requests:
+#      cpu: 100m
+#      memory: 128Mi
+#    limits:
+#      cpu: 2
+#      memory: 1Gi
+#geoip:
+#  resources:
+#    requests:
+#      cpu: 100m
+#      memory: 128Mi
+#    limits:
+#      cpu: 2
+#      memory: 1Gi

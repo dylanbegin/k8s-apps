@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wikijs
+  namespace: wikijs
+  labels:
+    app: wikijs
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: wikijs
+  template:
+    metadata:
+      labels:
+        app: wikijs
+    spec:
+      containers:
+        - name: wikijs
+          image: requarks/wiki:2.5
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              name: http
+              protocol: TCP
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: wikijs-ess
+                  key: username
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: wikijs-ess
+                  key: password
+          envFrom:
+            - configMapRef:
+                name: wikijs-cm-env
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 4
+              memory: 4Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wikijs
+  namespace: wikijs
+spec:
+  selector:
+    app: wikijs
+  ports:
+    - name: http
+      port: 3000
+      protocol: TCP
+      targetPort: 3000
+  type: ClusterIP
