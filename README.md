@@ -5,6 +5,16 @@
 > [!IMPORTANT]
 > This repo is built for my own environment so please review all configurations to verify compatibility!
 
+> [!TIP]
+> This repo is part of my IaC automation series. If you are building this in mind please follow my repo's in the order below.
+
+1.  [terraform-iso-get](https://github.com/dylanbegin/terraform-iso-get)
+1.  [packer](https://github.com/dylanbegin/packer)
+1.  [terraform-core](https://github.com/dylanbegin/terraform-core)
+1.  [ansible](https://github.com/dylanbegin/ansible)
+1.  [terraform-talos](https://github.com/dylanbegin/terraform-talos)
+1.  *you are here* [k8s-apps](https://github.com/dylanbegin/k8s-apps)
+
 # Initial deployment
 > [!NOTE]
 > These are temporary steps that still need automation.
