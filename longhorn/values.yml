@@ -1,10 +1,18 @@
 defaultSettings:
   allowCollectingLonghornUsageMetrics: false
-  storageReservedPercentageForDefaultDisk: 20
+  storageReservedPercentageForDefaultDisk: 5
   defaultDataPath: "/var/lib/longhorn"
+  v1DataEngine: true
+  # waiting for ability to auto mount disk but it does work!
+  v2DataEngine: false
+  v2DataEngineHugepageLimit: "1024"
+defaultBackupStore:
   backupTarget: "nfs://10.10.10.31:/mnt/zpool/ark/longhorn"
 preUpgradeChecker:
   jobEnabled: false
 # define our own storageclass
 persistence:
   defaultClass: false
+service:
+  ui:
+    type: ClusterIP

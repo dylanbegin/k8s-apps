@@ -10,6 +10,8 @@ resources:
   - external-services/adguard.yml
   - external-services/opnsense.yml
   - external-services/proxmox.yml
+  - external-services/s3.yml
+  - external-services/s3ui.yml
   - external-services/switch.yml
   - external-services/truenas.yml
   - external-services/truenas-backup.yml

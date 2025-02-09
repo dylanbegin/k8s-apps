@@ -43,6 +43,8 @@ spec:
       labels:
         app: codeserver
     spec:
+      securityContext:
+        fsGroup: 911
       containers:
         - name: codeserver
           image: lscr.io/linuxserver/code-server:4.96.2

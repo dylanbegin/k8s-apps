@@ -104,8 +104,7 @@ persistence:
   size: 10Gi
   nextcloudData:
     enabled: true
-    storageClass: longhorn-ssd #nextcloud-data-nfs
-    #accessMode: ReadWriteMany
+    storageClass: longhorn-ssd
     size: 100Gi
 resources:
   requests:

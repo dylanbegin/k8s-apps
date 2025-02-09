@@ -13,5 +13,6 @@ parameters:
   staleReplicaTimeout: "30"
   fromBackup: ""
   fsType: "ext4"
+  dataEngine: "v1"
   dataLocality: "best-effort"
   replicaAutoBalance: "least-effort"

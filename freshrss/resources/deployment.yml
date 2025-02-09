@@ -57,6 +57,16 @@ spec:
             - name: freshrss-extensions
               mountPath: /var/www/FreshRSS/extensions
           env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: freshrss
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: freshrss
+                  key: password
             - name: OIDC_PROVIDER_METADATA_URL
               valueFrom:
                 secretKeyRef:

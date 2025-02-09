@@ -20,6 +20,14 @@
 > These are temporary steps that still need automation.
 
 After running terraform to deploy the Talos cluster, complete the steps below to setup the kubernetes apps.
+  1. Before we build out the apps we need to stage the database and configure all databases.
+    1. `kubectl kustomize --enable-helm --load-restrictor=LoadRestrictionsNone /path-to/k8s-apps/databases | kubectl apply -f-`
+    1. Build databases:
+      1. `create user <username> with password '<password>';`
+      1. `create database <database> with owner <username>;`
+      1. `grant all privileges on database <database> to <username>;`
+      1. `grant connect on database <database> to <username>;`
+      1. The current list of databases needs to be created: `authentik` `freshrss` `gitea` `hassos` `nextcloud` `vaultwarden` `wikijs`
   1. Get the initial Argocd password.
     1. `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
     1. Save this password into your password manager.

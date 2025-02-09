@@ -13,7 +13,7 @@ resources:
   - infra/longhorn.yml         #60
   - infra/databases.yml        #70
   - infra/unifi.yml            #80
-  #- infra/portainer.yml        #90
+  - infra/portainer.yml        #90
   # build applications and sync wave
   - apps/vaultwarden.yml       #1000
   - apps/authentik.yml         #1010

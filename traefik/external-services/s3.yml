@@ -1,10 +1,10 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: cert-home-io
-  namespace: dashy
+  name: cert-s3-io
+  namespace: traefik
 spec:
-  secretName: cert-home-io
+  secretName: cert-s3-io
   issuerRef:
     name: le-prod
     kind: ClusterIssuer
@@ -12,15 +12,15 @@ spec:
     algorithm: ECDSA
     encoding: PKCS1
     size: 384
-  commonName: "home.cryogence.io"
+  commonName: "s3.cryogence.io"
   dnsNames:
-  - "home.cryogence.io"
+  - "s3.cryogence.io"
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: headers-home
-  namespace: dashy
+  name: headers-s3
+  namespace: traefik
 spec:
   headers:
     accessControlAllowMethods: ['GET', 'OPTIONS', 'PUT', 'POST', 'PATCH']
@@ -42,25 +42,37 @@ spec:
     stsSeconds: 15552000
     referrerPolicy: no-referrer
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s3
+  namespace: traefik
+spec:
+  externalName: nas.cryogence.org
+  type: ExternalName
+  ports:
+  - name: websecure
+    port: 9000
+    targetPort: 9000
+---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: dashy-webui
-  namespace: dashy
+  name: s3-webui
+  namespace: traefik
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`home.cryogence.io`)
+      match: Host(`s3.cryogence.io`)
       services:
-        - name: dashy
-          port: 8080
-          scheme: http
+        - name: s3
+          port: 9000
+          passHostHeader: true
+          scheme: https
       middlewares:
-        - name: headers-home
-          namespace: dashy
-        - name: headers-authfwd
-          namespace: authentik
+        - name: headers-s3
+          namespace: traefik
   tls:
-    secretName: cert-home-io
+    secretName: cert-s3-io

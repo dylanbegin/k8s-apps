@@ -5,6 +5,7 @@ metadata:
   namespace: vaultwarden
 data:
   LOG_LEVEL: "info"
+  # Swtich this to true on first setup!!
   SIGNUPS_ALLOWED: "false"
   DOMAIN: "https://pass.cryogence.io"
   ICON_CACHE_FOLDER: "data/icon_cache"
