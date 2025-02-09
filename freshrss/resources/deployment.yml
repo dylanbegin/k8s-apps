@@ -60,12 +60,12 @@ spec:
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: freshrss
+                  name: freshrss-username
                   key: username
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: freshrss
+                  name: freshrss-password
                   key: password
             - name: OIDC_PROVIDER_METADATA_URL
               valueFrom:

@@ -1,7 +1,7 @@
 > [!WARNING]
 > This README is still under development!
 
-# ![logo](https://icon.horse/icon/kubernetes.io) Kubernetes Cluster Repo
+# 󱃾 Kubernetes Cluster Repo
 > [!IMPORTANT]
 > This repo is built for my own environment so please review all configurations to verify compatibility!
 
