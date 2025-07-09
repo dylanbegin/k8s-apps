@@ -47,7 +47,7 @@ spec:
         fsGroup: 911
       containers:
         - name: codeserver
-          image: lscr.io/linuxserver/code-server:4.96.4
+          image: lscr.io/linuxserver/code-server:4.101.2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8443
