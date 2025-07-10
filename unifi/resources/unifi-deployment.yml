@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
         - name: unifi-controller
-          image: lscr.io/linuxserver/unifi-network-application:9.0.114
+          image: lscr.io/linuxserver/unifi-network-application:9.2.87
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8443
