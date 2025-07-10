@@ -8,9 +8,9 @@ resources:
   - resources/deployment-prowlarr.yml
   - resources/deployment-radarr.yml
   - resources/deployment-sonarr.yml
-  - resources/deployment-lidarr.yml
+  #- resources/deployment-lidarr.yml
   - resources/ingress-transmission.yml
   - resources/ingress-prowlarr.yml
   - resources/ingress-radarr.yml
   - resources/ingress-sonarr.yml
-  - resources/ingress-lidarr.yml
+  #- resources/ingress-lidarr.yml
