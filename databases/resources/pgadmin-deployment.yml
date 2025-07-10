@@ -36,7 +36,7 @@ spec:
         fsGroup: 5050
       containers:
         - name: pgadmin
-          image: dpage/pgadmin4:9.0.0
+          image: dpage/pgadmin4:9.5.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
