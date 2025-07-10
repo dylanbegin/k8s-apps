@@ -6,7 +6,7 @@ metadata:
 data:
   ND_LOGLEVEL: "info"
   ND_DEFAULTTHEME: "Spotify-ish"
-  ND_SCANSCHEDULE: "@hourly"
+  ND_SCANNER_SCHEDULE: "@hourly"
   ND_ENABLEDOWNLOADS: "true"
   #ND_IMAGECACHESIZE: "100MB"
   #ND_TRANSCODINGCACHESIZE: "100MB"
