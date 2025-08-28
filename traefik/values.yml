@@ -2,8 +2,6 @@ globalArguments:
   - "--global.sendanonymoususage=false"
   - "--global.checknewversion=false"
 additionalArguments:
-  - --entryPoints.web.http.redirections.to=websecure
-  - --entryPoints.web.http.redirections.scheme=https
   - --serversTransport.insecureSkipVerify=true
   - --log.level=INFO
 deployment:
@@ -20,6 +18,11 @@ ports:
       default: true
     exposedPort: 80
     protocol: TCP
+    redirections:
+      entryPoint:
+        to: websecure
+        scheme: https
+        permanent: true
   websecure:
     port: 8443
     expose:
