@@ -10,7 +10,7 @@ resources:
 helmCharts:
   - name: nextcloud
     repo: https://nextcloud.github.io/helm/
-    version: 7.0.2
+    version: 8.7.0
     releaseName: "nextcloud"
     namespace: nextcloud
     includeCRDs: true
