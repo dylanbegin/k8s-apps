@@ -2,10 +2,6 @@ global:
   nameOverride: "authentik"
   revisionHistoryLimit: 1
   env:
-    - name: AUTHENTIK_REDIS__HOST
-      value: "authentik-redis-master"
-    - name: AUTHENTIK_REDIS__PORT
-      value: "6379"
     - name: AUTHENTIK_POSTGRESQL__HOST
       value: "postgres.databases.svc.cluster.local"
     - name: AUTHENTIK_POSTGRESQL__PORT
@@ -48,10 +44,6 @@ global:
     runAsUser: 1000
     runAsGroup: 1000
     fsGroup: 1000
-redis:
-  enabled: true
-  global:
-    storageClass: longhorn-ssd
 #server:
 #  resources:
 #    requests:
