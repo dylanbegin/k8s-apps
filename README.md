@@ -1,9 +1,6 @@
 > [!NOTE]
 > This is a mirrored repo.
 
-> [!WARNING]
-> This README is still under development!
-
 # 󱃾 Kubernetes Cluster Repo
 > [!IMPORTANT]
 > This repo is built for my own environment so please review all configurations to verify compatibility!
