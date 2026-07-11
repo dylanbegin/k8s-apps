@@ -45,7 +45,7 @@ spec:
     spec:
       containers:
         - name: navidrome
-          image: deluan/navidrome:0.59.0
+          image: deluan/navidrome:0.63.1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 4533
@@ -63,16 +63,6 @@ spec:
                 secretKeyRef:
                   name: navidrome-secrets
                   key: navidrome-baseurl
-            - name: ND_SPOTIFY_ID
-              valueFrom:
-                secretKeyRef:
-                  name: navidrome-secrets
-                  key: navidrome-spotify-id
-            - name: ND_SPOTIFY_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: navidrome-secrets
-                  key: navidrome-spotify-secret
             - name: ND_LASTFM_APIKEY
               valueFrom:
                 secretKeyRef:
