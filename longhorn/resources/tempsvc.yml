@@ -1,0 +1,19 @@
+# apply this if you need access to the ui
+# during initial setup
+apiVersion: v1
+kind: Service
+metadata:
+  name: longhorn-ui-temp
+  namespace: longhorn-system
+  labels:
+    app: longhorn-ui
+  annotations: {"io.cilium/lb-ipam-ips": "10.10.10.111"}
+spec:
+  type: LoadBalancer
+  selector:
+    app: longhorn-ui
+  ports:
+  - port: 80
+    name: http
+    protocol: TCP
+    targetPort: 8000
