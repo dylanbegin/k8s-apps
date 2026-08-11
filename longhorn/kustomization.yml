@@ -5,13 +5,12 @@ resources:
   - resources/ns.yml
   - resources/storageclass.yml
   - resources/ingress.yml
-  - resources/snapshot.yml
-  - resources/backup.yml
+  - resources/backups.yml
 
 helmCharts:
   - name: longhorn
     repo: https://charts.longhorn.io
-    version: 1.8.1
+    version: 1.12.0
     releaseName: "longhorn"
     namespace: longhorn-system
     includeCRDs: true

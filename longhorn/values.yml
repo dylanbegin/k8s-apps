@@ -3,10 +3,10 @@ defaultSettings:
   storageReservedPercentageForDefaultDisk: 5
   defaultDataPath: "/var/lib/longhorn"
   #nodeDownPodDeletionPolicy: "delete-both-statefulset-and-deployment-pod"
-  v1DataEngine: true
-  # waiting for ability to auto mount disk but it does work!
-  v2DataEngine: false
+  v1DataEngine: false
+  v2DataEngine: true
   v2DataEngineHugepageLimit: "1024"
+  createDefaultDiskLabeledNodes: true
 defaultBackupStore:
   backupTarget: "nfs://10.10.10.31:/mnt/zpool/ark/longhorn"
 preUpgradeChecker:
@@ -14,6 +14,7 @@ preUpgradeChecker:
 # define our own storageclass
 persistence:
   defaultClass: false
+  dataEngine: v2
 service:
   ui:
     type: ClusterIP
