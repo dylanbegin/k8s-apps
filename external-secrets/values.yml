@@ -1,4 +1,10 @@
 installCRDs: true
+crds:
+  createClusterExternalSecret: true
+  createClusterSecretStore: true
+  createSecretStore: true
+vault:
+  enableTokenCache: false
 #resources:
 #  requests:
 #    cpu: 10m
