@@ -31,4 +31,4 @@ After running terraform to deploy the Talos cluster, complete the steps below to
   1. Get the initial Argocd password.
     1. `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
     1. Save this password into your password manager.
-  1. Run the deployment command `kubectl kustomize --enable-helm --load-restrictor=LoadRestrictionsNone /path-to/k8s-apps/argocd-build | kubectl apply -f-`
+  1. Run the deployment command `kubectl kustomize --enable-helm --load-restrictor=LoadRestrictionsNone /path-to/k8s-apps/argocd-build | kubectl apply -f- --server-side`
