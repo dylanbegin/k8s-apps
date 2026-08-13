@@ -1,6 +1,6 @@
-globalArguments:
-  - "--global.sendanonymoususage=false"
-  - "--global.checknewversion=false"
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
 additionalArguments:
   - --serversTransport.insecureSkipVerify=true
   - --log.level=INFO
@@ -9,7 +9,7 @@ deployment:
   replicas: 2
 gateway:
   enabled: false
-gatewayclass:
+gatewayClass:
   enabled: false
 ports:
   web:
@@ -18,11 +18,12 @@ ports:
       default: true
     exposedPort: 80
     protocol: TCP
-    redirections:
-      entryPoint:
-        to: websecure
-        scheme: https
-        permanent: true
+    http:
+      redirections:
+        entrypoint:
+          to: websecure
+          scheme: https
+          permanent: true
   websecure:
     port: 8443
     expose:
@@ -32,25 +33,15 @@ ports:
     http3:
       enabled: true
       advertisedPort: 4443
-    tls:
-      enabled: true
+    http:
+      tls:
+        enabled: true
 #tlsoption currently does not apply to authentik outpost.
 #throws traefik warnings and falls back to default option.
 #tlsOptions:
 #  tls13only:
 #    labels: {}
 #    minVersion: VersionTLS13
-#    maxVersion: VersionTLS13
-#    #curvePreferences:
-#    #  - CurveP521
-#    #  - CurveP384
-#    cipherSuites:
-#      - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-#      - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-#      - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
-#      - TLS_AES_128_GCM_SHA256
-#      - TLS_AES_256_GCM_SHA384
-#      - TLS_CHACHA20_POLY1305_SHA256
 #    sniStrict: true
 ingressRoute:
   dashboard:
@@ -65,9 +56,8 @@ providers:
     allowExternalNameServices: true
     publishedService:
       enabled: true
-logs:
-  general:
-    level: INFO
+log:
+  level: INFO
 rbac:
   enabled: true
 service:
