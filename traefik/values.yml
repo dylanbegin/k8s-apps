@@ -3,7 +3,6 @@ global:
   sendAnonymousUsage: false
 additionalArguments:
   - --serversTransport.insecureSkipVerify=true
-  - --log.level=INFO
 deployment:
   enabled: true
   replicas: 2
@@ -49,13 +48,13 @@ ingressRoute:
 providers:
   kubernetesCRD:
     enabled: true
-    allowExternalNameServices: true
     allowCrossNamespace: true #req for authentik
+    allowExternalNameServices: true
   kubernetesIngress:
     enabled: true
-    allowExternalNameServices: true
     publishedService:
       enabled: true
+    allowExternalNameServices: true
 log:
   level: INFO
 rbac:

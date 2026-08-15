@@ -15,3 +15,14 @@ helmCharts:
     namespace: nextcloud
     includeCRDs: true
     valuesFile: values.yml
+
+# need to add namespace patch missing from templates:
+# ref: https://github.com/nextcloud/helm/pull/792
+patches:
+  - target:
+      kind: "^(ConfigMap|Service|PersistentVolumeClaim|Deployment)$"
+      name: "^nextcloud.*$"
+    patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: nextcloud

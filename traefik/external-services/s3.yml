@@ -52,8 +52,8 @@ spec:
   type: ExternalName
   ports:
   - name: websecure
-    port: 9000
-    targetPort: 9000
+    port: 30292
+    targetPort: 30292
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -68,7 +68,7 @@ spec:
       match: Host(`s3.cryogence.io`)
       services:
         - name: s3
-          port: 9000
+          port: 30292
           passHostHeader: true
           scheme: https
       middlewares:
