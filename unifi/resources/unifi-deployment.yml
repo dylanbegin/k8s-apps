@@ -9,7 +9,7 @@ spec:
   storageClassName: longhorn-ssd
   resources:
     requests:
-      storage: 1Gi
+      storage: 5Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -32,30 +32,36 @@ spec:
     spec:
       containers:
         - name: unifi-controller
-          image: lscr.io/linuxserver/unifi-network-application:10.0.162
+          image: lscr.io/linuxserver/unifi-network-application:10.5.67
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8443
+            - containerPort: 8443 #admin webui
               name: https
               protocol: TCP
-            - containerPort: 8080
+            - containerPort: 8080 #device comm
               name: dev-com
               protocol: TCP
-            - containerPort: 3478
+            - containerPort: 3478 #stun
               name: stun
               protocol: UDP
-            - containerPort: 1001
+            - containerPort: 1001 #ap discovery
               name: discovery
+              protocol: UDP
+            - containerPort: 8880 #guest http
+              name: guest-http
+              protocol: TCP
+            - containerPort: 6789 #mobile throughput test
+              name: mtt
+              protocol: TCP
+            - containerPort: 5514 #remote syslog
+              name: syslog
               protocol: UDP
           volumeMounts:
             - name: unifi-config
               mountPath: /config
           env:
             - name: MONGO_USER
-              valueFrom:
-                secretKeyRef:
-                  name: unifi-user
-                  key: unifi-username
+              value: unifi #can't change
             - name: MONGO_PASS
               valueFrom:
                 secretKeyRef:
@@ -94,6 +100,36 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: unifi-guest
+  namespace: unifi
+spec:
+  selector:
+    app: unifi-guest
+  ports:
+    - name: guest-http
+      port: 8880
+      protocol: TCP
+      targetPort: 8880
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi-syslog
+  namespace: unifi
+spec:
+  selector:
+    app: unifi-syslog
+  ports:
+    - name: syslog
+      port: 5514
+      protocol: TCP
+      targetPort: 5514
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: unifi-backend
   namespace: unifi
   annotations:
@@ -114,4 +150,7 @@ spec:
       port: 1001
       protocol: UDP
       targetPort: 1001
+    - name: mtt
+      port: 6789
+      protocol: TCP
   type: LoadBalancer

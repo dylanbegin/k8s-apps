@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mongo-data-pvc
+  name: unifi-mongo-data-pvc
   namespace: unifi
 spec:
   accessModes:
@@ -14,36 +14,55 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongo
+  name: unifi-mongo
   namespace: unifi
   labels:
-    app: mongo
+    app: unifi-mongo
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: mongo
+      app: unifi-mongo
   template:
     metadata:
       labels:
-        app: mongo
+        app: unifi-mongo
     spec:
       containers:
-        - name: mongo
-          image: mongo:7.0-jammy
+        - name: unifi-mongo
+          image: mongo:8.3.8-noble
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 27017
               name: tcp
               protocol: TCP
           volumeMounts:
-            - name: mongo-data
+            - name: unifi-mongo-data
               mountPath: /data/db
-            - name: unifi-init
+            - name: unifi-mongo-init
               mountPath: /docker-entrypoint-initdb.d/
               readOnly: true
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: root
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: unifi-user
+                  key: unifi-password
+            - name: MONGO_USER
+              value: unifi #can't change
+            - name: MONGO_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: unifi-user
+                  key: unifi-password
+            - name: MONGO_DBNAME
+              value: unifi
+            - name: MONGO_AUTHSOURCE
+              value: admin
           #command: ["--wiredTigerCacheSizeGB 0.5"]
           resources:
             requests:
@@ -53,21 +72,21 @@ spec:
               cpu: 1
               memory: 1Gi
       volumes:
-        - name: mongo-data
+        - name: unifi-mongo-data
           persistentVolumeClaim:
-            claimName: mongo-data-pvc
-        - name: unifi-init
-          secret:
-            secretName: unifi-init
+            claimName: unifi-mongo-data-pvc
+        - name: unifi-mongo-init
+          configMap:
+            name: unifi-mongo-cm-init
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongo
+  name: unifi-mongo
   namespace: unifi
 spec:
   selector:
-    app: mongo
+    app: unifi-mongo
   ports:
     - name: tcp
       port: 27017

@@ -64,3 +64,26 @@ spec:
           namespace: authentik
   tls:
     secretName: cert-wifi-io
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: unifi-controller-guest
+  namespace: unifi
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`guest.cryogence.io`)
+      services:
+        - name: unifi-guest
+          port: 8880
+          scheme: http
+      middlewares: #use same headers but remove auth
+        - name: headers-wifi
+          namespace: unifi
+        #- name: headers-authfwd
+        #  namespace: authentik
+  tls:
+    secretName: cert-guest-io

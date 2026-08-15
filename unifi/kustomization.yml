@@ -3,9 +3,9 @@ kind: Kustomization
 
 resources:
   - resources/ns.yml
-  - resources/mongo-secret.yml
-  - resources/mongo-deployment.yml
   - resources/unifi-secret.yml
+  - resources/mongo-cm-init.yml
+  - resources/mongo-deployment.yml
   - resources/unifi-cm-env.yml
   - resources/unifi-deployment.yml
   - resources/unifi-ingress.yml
