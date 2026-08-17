@@ -4,22 +4,17 @@ metadata:
   name: snipeit-cm-env
   namespace: snipeit
 data:
-  # Sytem settings
-  #S6_READ_ONLY_ROOT: "1"
-  PUID: "1000"
-  PGID: "1000"
-  TZ: "America/Los_Angeles"
   # BASIC APP SETTINGS
   APP_ENV: "production"
   APP_DEBUG: "false"
   APP_URL: "https://sam.cryogence.io"
-  APP_FORCE_TLS: "true"
+  APP_FORCE_TLS: "true" #breaks backups if false
   APP_CIPHER: "AES-256-CBC"
   APP_TIMEZONE: "America/Los_Angeles"
   APP_LOCALE: "en-US"
   MAX_RESULTS: "500"
-  SESSION_DRIVER: "redis"
-  CACHE_DRIVER: "redis"
+  SESSION_DRIVER: "file"
+  CACHE_DRIVER: "file"
   QUEUE_DRIVER: "sync"
   ALLOW_DATA_PURGE: "true"
   REQUIRE_SAML: "false"

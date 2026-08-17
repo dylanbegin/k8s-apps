@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: snipeit-config-pvc
+  name: snipeit-data-pvc
   namespace: snipeit
 spec:
   accessModes:
@@ -9,7 +9,7 @@ spec:
   storageClassName: longhorn-ssd
   resources:
     requests:
-      storage: 2Gi
+      storage: 5Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -32,17 +32,17 @@ spec:
     spec:
       containers:
         - name: snipeit
-          image: lscr.io/linuxserver/snipe-it:7.1.16
+          image: snipe/snipe-it:v7.1.16-alpine
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 443
               name: https
               protocol: TCP
           volumeMounts:
-            - name: snipeit-config
-              mountPath: /config
+            - name: snipeit-data
+              mountPath: /var/lib/snipit
             - name: snipeit-cm-php
-              mountPath: /config/php/php-local.ini
+              mountPath: /php/php-local.ini
               subPath: php-local.ini
               readOnly: true
           env:
@@ -87,9 +87,9 @@ spec:
               cpu: 4
               memory: 2Gi
       volumes:
-        - name: snipeit-config
+        - name: snipeit-data
           persistentVolumeClaim:
-            claimName: snipeit-config-pvc
+            claimName: snipeit-data-pvc
         - name: snipeit-cm-php
           configMap:
             name: snipeit-cm-php
