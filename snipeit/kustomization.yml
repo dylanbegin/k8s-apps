@@ -4,9 +4,8 @@ namespace: snipeit
 
 resources:
   - resources/ns.yml
-  #- resources/redis-deployment.yml
+  - resources/redis-deployment.yml
   - resources/snipeit-secret.yml
   - resources/snipeit-cm-env.yml
-  - resources/snipeit-cm-php.yml
   - resources/snipeit-deployment.yml
   - resources/snipeit-ingress.yml

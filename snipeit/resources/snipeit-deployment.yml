@@ -32,19 +32,15 @@ spec:
     spec:
       containers:
         - name: snipeit
-          image: snipe/snipe-it:v7.1.16-alpine
+          image: snipe/snipe-it:v8.7.2-alpine
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 443
-              name: https
+            - containerPort: 80
+              name: http
               protocol: TCP
           volumeMounts:
             - name: snipeit-data
-              mountPath: /var/lib/snipit
-            - name: snipeit-cm-php
-              mountPath: /php/php-local.ini
-              subPath: php-local.ini
-              readOnly: true
+              mountPath: /var/lib/snipeit
           env:
             - name: DB_USERNAME
               valueFrom:
@@ -56,26 +52,11 @@ spec:
                 secretKeyRef:
                   name: snipeit-user
                   key: snipeit-password
-            - name: MAIL_USERNAME
+            - name: APP_KEY
               valueFrom:
                 secretKeyRef:
                   name: snipeit-user
-                  key: snipeit-email
-            - name: MAIL_FROM_ADDR
-              valueFrom:
-                secretKeyRef:
-                  name: snipeit-user
-                  key: snipeit-email
-            - name: MAIL_REPLYTO_ADDR
-              valueFrom:
-                secretKeyRef:
-                  name: snipeit-user
-                  key: snipeit-email
-            - name: MAIL_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: snipeit-user
-                  key: snipeit-emailapi
+                  key: snipeit-appkey
           envFrom:
             - configMapRef:
                 name: snipeit-cm-env
@@ -90,21 +71,18 @@ spec:
         - name: snipeit-data
           persistentVolumeClaim:
             claimName: snipeit-data-pvc
-        - name: snipeit-cm-php
-          configMap:
-            name: snipeit-cm-php
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: snipeit-https
+  name: snipeit-http
   namespace: snipeit
 spec:
   selector:
     app: snipeit
   ports:
-    - name: https
-      port: 443
+    - name: http
+      port: 80
       protocol: TCP
-      targetPort: 443
+      targetPort: 80
   type: ClusterIP

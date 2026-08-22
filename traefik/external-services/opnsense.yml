@@ -72,8 +72,8 @@ spec:
           passHostHeader: true
           scheme: https
       middlewares:
-        - name: headers-fwl
-          namespace: traefik
+        #- name: headers-fwl
+        #  namespace: traefik
         #- name: headers-authfwd
         #  namespace: authentik
   tls:

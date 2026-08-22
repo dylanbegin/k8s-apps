@@ -54,11 +54,11 @@ spec:
     - kind: Rule
       match: Host(`sam.cryogence.io`)
       services:
-        - name: snipeit-https
-          port: 443
-          scheme: https
-      middlewares:
-        - name: headers-sam
-          namespace: snipeit
+        - name: snipeit-http
+          port: 80
+          scheme: http
+      #middlewares:
+      #  - name: headers-sam
+      #    namespace: snipeit
   tls:
     secretName: cert-sam-io
