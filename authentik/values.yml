@@ -1,6 +1,6 @@
 global:
   nameOverride: "authentik"
-  revisionHistoryLimit: 1
+  revisionHistoryLimit: 3
   env:
     - name: AUTHENTIK_POSTGRESQL__HOST
       value: "postgres.databases.svc.cluster.local"
@@ -44,14 +44,14 @@ global:
     runAsUser: 1000
     runAsGroup: 1000
     fsGroup: 1000
-#server:
-#  resources:
+server:
+  resources:
 #    requests:
 #      cpu: 100m
 #      memory: 128Mi
-#    limits:
-#      cpu: 2
-#      memory: 1Gi
+    limits:
+      cpu: 2
+      memory: 2Gi
 worker:
   volumeMounts:
     - name: authentik-media
@@ -60,13 +60,13 @@ worker:
     - name: authentik-media
       persistentVolumeClaim:
         claimName: authentik-media-pvc
-#  resources:
+  resources:
 #    requests:
 #      cpu: 100m
 #      memory: 128Mi
-#    limits:
-#      cpu: 2
-#      memory: 1Gi
+    limits:
+      cpu: 2
+      memory: 2Gi
 #geoip:
 #  resources:
 #    requests:
