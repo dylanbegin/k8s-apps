@@ -56,13 +56,11 @@ spec:
     - kind: Rule
       match: Host(`code.cryogence.io`)
       services:
-        - name: codeserver
-          port: 8443
+        - name: coder
+          port: 80
           scheme: http
       middlewares:
         - name: headers-code
           namespace: codeserver
-        - name: headers-authfwd
-          namespace: authentik
   tls:
     secretName: cert-code-io

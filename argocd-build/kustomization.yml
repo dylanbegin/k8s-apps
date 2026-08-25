@@ -28,3 +28,4 @@ resources:
   - apps/jellyfin.yml          #1100
   - apps/servarr.yml           #1110
   - apps/dashy.yml             #1120
+  - apps/whoami.yml            #1130

@@ -1,15 +1,38 @@
 global:
   nameOverride: "authentik"
-  revisionHistoryLimit: 3
   env:
+    - name: AUTHENTIK_LOG_LEVEL
+      value: "info"
+    # force ipv4
+    - name: AUTHENTIK_LISTEN__HTTP
+      value: "0.0.0.0:9000"
+    - name: AUTHENTIK_LISTEN__HTTPS
+      value: "0.0.0.0:9443"
+    - name: AUTHENTIK_LISTEN__METRICS
+      value: "0.0.0.0:9300"
+    - name: AUTHENTIK_LISTEN__LDAP
+      value: "0.0.0.0:3389"
+    - name: AUTHENTIK_LISTEN__LDAPS
+      value: "0.0.0.0:6636"
+    - name: AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS
+      value: "127.0.0.0/8,10.0.0.0/8"
+    # database configs
     - name: AUTHENTIK_POSTGRESQL__HOST
       value: "postgres.databases.svc.cluster.local"
     - name: AUTHENTIK_POSTGRESQL__PORT
       value: "5432"
     - name: AUTHENTIK_POSTGRESQL__NAME
       value: "authentik"
-    - name: AUTHENTIK_LOG_LEVEL
-      value: "info"
+    # s3 configs
+    - name: AUTHENTIK_STORAGE__BACKEND
+      value: "s3"
+    - name: AUTHENTIK_STORAGE__S3__BUCKET_NAME
+      value: "authentik"
+    - name: AUTHENTIK_STORAGE__S3__ENDPOINT
+      value: "https://s3.cryogence.io"
+    - name: AUTHENTIK_STORAGE__S3__CUSTOM_DOMAIN
+      value: "s3.cryogence.io/authentik"
+    # secrets from eso
     - name: AUTHENTIK_BOOTSTRAP_EMAIL
       valueFrom:
         secretKeyRef:
@@ -29,7 +52,7 @@ global:
       valueFrom:
         secretKeyRef:
           name: authentik-user
-          key: authentik-password
+          key: authentik-secret-key
     - name: AUTHENTIK_POSTGRESQL__USER
       valueFrom:
         secretKeyRef:
@@ -40,6 +63,16 @@ global:
         secretKeyRef:
           name: authentik-user
           key: authentik-password
+    - name: AUTHENTIK_STORAGE__S3__ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: authentik-user
+          key: authentik-s3-access-key
+    - name: AUTHENTIK_STORAGE__S3__SECRET_KEY
+      valueFrom:
+        secretKeyRef:
+          name: authentik-user
+          key: authentik-s3-secret-key
   securityContext:
     runAsUser: 1000
     runAsGroup: 1000
@@ -53,13 +86,6 @@ server:
       cpu: 2
       memory: 2Gi
 worker:
-  volumeMounts:
-    - name: authentik-media
-      mountPath: /media
-  volumes:
-    - name: authentik-media
-      persistentVolumeClaim:
-        claimName: authentik-media-pvc
   resources:
 #    requests:
 #      cpu: 100m

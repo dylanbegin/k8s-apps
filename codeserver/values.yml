@@ -1,0 +1,43 @@
+coder:
+  env:
+    - name: CODER_ACCESS_URL
+      value: "https://code.cryogence.io"
+    - name: CODER_PG_CONNECTION_URL
+      valueFrom:
+        secretKeyRef:
+          name: codeserver
+          key: codeserver-dburl
+    #oidc configs
+    - name: CODER_OAUTH2_GITHUB_DEFAULT_PROVIDER_ENABLE
+      value: "false" #we want to disable github oath
+    - name: CODER_OIDC_ISSUER_URL
+      value: "https://auth.cryogence.io/application/o/codeserver/"
+    - name: CODER_OIDC_EMAIL_DOMAIN
+      value: "cryogence.io,cryogence.org,protonmail.com"
+    - name: CODER_OIDC_SCOPES
+      value: "openid,profile,email,offline_access"
+    - name: CODER_OIDC_SIGN_IN_TEXT
+      value: "Log in with Cryogence SSO"
+    - name: CODER_OIDC_ICON_URL
+      value: "https://auth.cryogence.io/static/dist/assets/icons/icon.svg"
+    - name: CODER_OIDC_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: codeserver-oidc
+          key: codeserver-clientid
+    - name: CODER_OIDC_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: codeserver-oidc
+          key: codeserver-client-secret
+  image:
+    tag: "v2.35.4" #must be set
+  resources:
+    requests:
+      cpu: 200m
+      memory: 128Mi
+    limits:
+      cpu: 4
+      memory: 4Gi
+  service:
+    type: ClusterIP #use traefik

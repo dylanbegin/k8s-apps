@@ -61,7 +61,5 @@ spec:
       middlewares:
         - name: headers-home
           namespace: dashy
-        - name: headers-authfwd
-          namespace: authentik
   tls:
     secretName: cert-home-io

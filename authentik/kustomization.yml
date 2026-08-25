@@ -4,14 +4,13 @@ kind: Kustomization
 resources:
   - resources/ns.yml
   - resources/secret.yml
-  - resources/pvc.yml
   - resources/ingress.yml
   - resources/middleware.yml
 
 helmCharts:
   - name: authentik
     repo: https://charts.goauthentik.io/
-    version: 2026.5.6
+    version: 2026.8.0
     releaseName: "authentik"
     namespace: authentik
     includeCRDs: true

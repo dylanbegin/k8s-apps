@@ -3,6 +3,14 @@ kind: Kustomization
 
 resources:
   - resources/ns.yml
-  - resources/configmap.yml
-  - resources/deployment.yml
+  - resources/secret.yml
   - resources/ingress.yml
+
+helmCharts:
+  - name: coder
+    repo: https://helm.coder.com/v2
+    version: 2.36.1
+    releaseName: "coder-v2"
+    namespace: codeserver
+    includeCRDs: true
+    valuesFile: values.yml

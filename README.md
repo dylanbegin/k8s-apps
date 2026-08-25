@@ -27,7 +27,7 @@ After running terraform to deploy the Talos cluster, complete the steps below to
       1. `create database <database> with owner <username>;`
       1. `grant all privileges on database <database> to <username>;`
       1. `grant connect on database <database> to <username>;`
-      1. The current list of databases needs to be created: `authentik` `freshrss` `gitea` `hassos` `nextcloud` `vaultwarden` `wikijs`
+      1. The current list of databases needs to be created: `authentik` `coder` `freshrss` `gitea` `hassos` `nextcloud` `vaultwarden` `wikijs`
   1. Get the initial Argocd password.
     1. `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
     1. Save this password into your password manager.

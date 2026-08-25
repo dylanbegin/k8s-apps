@@ -47,7 +47,7 @@ spec:
         fsGroup: 911
       containers:
         - name: codeserver
-          image: lscr.io/linuxserver/code-server:4.107.0
+          image: lscr.io/linuxserver/code-server:4.133.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8443
@@ -58,6 +58,17 @@ spec:
               mountPath: /config
             - name: codeserver-data
               mountPath: /data
+          env:
+            - name: CODER_OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: codeserver-oidc
+                  key: codeserver-clientid
+            - name: CODER_OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: codeserver-oidc
+                  key: codeserver-client-secret
           envFrom:
             - configMapRef:
                 name: codeserver-cm-env

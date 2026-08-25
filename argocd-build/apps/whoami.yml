@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: whoami
+  namespace: argocd
+  labels:
+    name: apps
+  annotations:
+    argocd.argoproj.io/sync-wave: '1130'
+spec:
+  project: production
+  source:
+    path: whoami
+    repoURL: https://github.com/dylanbegin/k8s-apps.git
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: whoami
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 10
+      backoff:
+        duration: 1m
+        maxDuration: 16m
+        factor: 2
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true
+    - ApplyOutOfSyncOnly=true
+    - RespectIgnoreDifferences=true
