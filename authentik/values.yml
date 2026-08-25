@@ -32,7 +32,7 @@ global:
       value: "https://s3.cryogence.io"
     - name: AUTHENTIK_STORAGE__S3__CUSTOM_DOMAIN
       value: "s3.cryogence.io/authentik"
-    # secrets from eso
+    # bootstrap secrets
     - name: AUTHENTIK_BOOTSTRAP_EMAIL
       valueFrom:
         secretKeyRef:
@@ -53,6 +53,23 @@ global:
         secretKeyRef:
           name: authentik-user
           key: authentik-secret-key
+    # email secrets
+    - name: AUTHENTIK_EMAIL__USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: authentik-user
+          key: authentik-email
+    - name: AUTHENTIK_EMAIL__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: authentik-user
+          key: authentik-email-token
+    - name: AUTHENTIK_EMAIL__FROM
+      valueFrom:
+        secretKeyRef:
+          name: authentik-user
+          key: authentik-email
+    # db secrets
     - name: AUTHENTIK_POSTGRESQL__USER
       valueFrom:
         secretKeyRef:
@@ -63,6 +80,7 @@ global:
         secretKeyRef:
           name: authentik-user
           key: authentik-password
+    # s3 secrets
     - name: AUTHENTIK_STORAGE__S3__ACCESS_KEY
       valueFrom:
         secretKeyRef:
@@ -77,6 +95,12 @@ global:
     runAsUser: 1000
     runAsGroup: 1000
     fsGroup: 1000
+email:
+  host: "smtp.protonmail.ch"
+  port: 587
+  use_tls: true
+  use_ssl: false
+  timeout: 10
 server:
   resources:
 #    requests:
