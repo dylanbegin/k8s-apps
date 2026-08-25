@@ -13,7 +13,7 @@ coder:
     - name: CODER_OIDC_ISSUER_URL
       value: "https://auth.cryogence.io/application/o/codeserver/"
     - name: CODER_OIDC_EMAIL_DOMAIN
-      value: "cryogence.io,cryogence.org,protonmail.com"
+      value: "cryogence.io"
     - name: CODER_OIDC_SCOPES
       value: "openid,profile,email,offline_access"
     - name: CODER_OIDC_SIGN_IN_TEXT
