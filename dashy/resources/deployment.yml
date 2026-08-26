@@ -30,6 +30,10 @@ spec:
       labels:
         app: dashy
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
       containers:
         - name: dashy
           image: lissy93/dashy:4.4.0
