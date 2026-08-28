@@ -57,10 +57,10 @@ spec:
         - name: hassos
           port: 8123
           scheme: http
-      middlewares:
-        - name: headers-iot
-          namespace: hassos
-        - name: headers-authfwd
-          namespace: authentik
+      #middlewares:
+      #  - name: headers-iot
+      #    namespace: hassos
+      #  - name: headers-authfwd
+      #    namespace: authentik
   tls:
     secretName: cert-iot-io

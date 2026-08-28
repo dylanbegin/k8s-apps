@@ -3,6 +3,5 @@ kind: Kustomization
 
 resources:
   - resources/ns.yml
-  - resources/secret.yml
   - resources/deployment.yml
   - resources/ingress.yml

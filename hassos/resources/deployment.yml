@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
         - name: hassos
-          image: homeassistant/home-assistant:2025.11
+          image: homeassistant/home-assistant:2026.8
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8123
@@ -41,10 +41,6 @@ spec:
           volumeMounts:
             - name: hassos-config
               mountPath: /config
-            - name: hassos-configuration
-              mountPath: /config/configuration.yaml
-              subPath: configuration.yaml
-              readOnly: true
           resources:
             requests:
               cpu: 100m
@@ -56,9 +52,6 @@ spec:
         - name: hassos-config
           persistentVolumeClaim:
             claimName: hassos-config-pvc
-        - name: hassos-configuration
-          secret:
-            secretName: hassos-configuration
 ---
 apiVersion: v1
 kind: Service
