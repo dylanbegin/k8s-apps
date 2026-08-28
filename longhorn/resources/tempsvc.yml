@@ -5,9 +5,8 @@ kind: Service
 metadata:
   name: longhorn-ui-temp
   namespace: longhorn-system
-  labels:
-    app: longhorn-ui
-  annotations: {"io.cilium/lb-ipam-ips": "10.10.10.111"}
+  annotations:
+    io.cilium/lb-ipam-ips: "10.10.10.111"
 spec:
   type: LoadBalancer
   selector:

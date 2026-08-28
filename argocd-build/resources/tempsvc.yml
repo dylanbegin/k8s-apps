@@ -5,7 +5,8 @@ kind: Service
 metadata:
   name: argo-ui-temp
   namespace: argocd
-  annotations: {"io.cilium/lb-ipam-ips": "10.10.10.112"}
+  annotations:
+    io.cilium/lb-ipam-ips: "10.10.10.112"
 spec:
   type: LoadBalancer
   ports:

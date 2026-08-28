@@ -5,9 +5,8 @@ kind: Service
 metadata:
   name: hassos-ui-temp
   namespace: hassos
-  labels:
-    app: hassos-ui-temp
-  annotations: {"io.cilium/lb-ipam-ips": "10.10.10.111"}
+  annotations:
+    io.cilium/lb-ipam-ips: "10.10.10.111"
 spec:
   type: LoadBalancer
   selector:
