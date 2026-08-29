@@ -31,3 +31,20 @@ spec:
   labels:
     type: 'full'
     schedule: 'daily'
+---
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: backup-monthly
+  namespace: longhorn-system
+spec:
+  # monthly backup and retain last 6
+  cron: "0 3 1 * *"
+  task: "backup"
+  groups:
+  - default
+  retain: 6
+  concurrency: 2
+  labels:
+    type: 'full'
+    schedule: 'monthly'
