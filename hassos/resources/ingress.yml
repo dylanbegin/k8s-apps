@@ -29,12 +29,12 @@ spec:
     frameDeny: true
     contentSecurityPolicy: >-
       base-uri 'self';
-      connect-src 'self';
+      connect-src 'self' data:;
       font-src 'self';
       form-action 'self';
       frame-ancestors 'none';
       frame-src 'none';
-      img-src 'self' data:;
+      img-src 'self' data: https:;
       manifest-src 'self';
       media-src 'self';
       object-src 'none';
