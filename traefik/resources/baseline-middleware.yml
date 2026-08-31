@@ -1,30 +1,13 @@
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: cert-code-io
-  namespace: codeserver
-spec:
-  secretName: cert-code-io
-  issuerRef:
-    name: le-prod
-    kind: ClusterIssuer
-  privateKey:
-    algorithm: ECDSA
-    encoding: PKCS1
-    size: 384
-  commonName: "code.cryogence.io"
-  dnsNames:
-  - "code.cryogence.io"
----
+# baseline middleware example to attach all ingressroutes.
+# based off owasp and security best practices.
+# copy it and tune as needed.
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: headers-code
-  namespace: codeserver
+  name: headers-example
+  namespace: example
 spec:
   headers:
-    accessControlAllowOriginList:
-      - https://open-vsx.org
     # prevent MIME-type sniffing
     contentTypeNosniff: true
     # clickjacking protection
@@ -33,16 +16,16 @@ spec:
       base-uri 'self';
       connect-src 'self';
       default-src 'self';
-      font-src 'self' data: ;
+      font-src 'self';
       form-action 'self';
       frame-ancestors 'none';
       frame-src 'none';
-      img-src 'self' data: https://auth.cryogence.io;
+      img-src 'self' data:;
       manifest-src 'self';
       media-src 'self';
       object-src 'none';
       script-src 'self';
-      style-src 'self' 'unsafe-inline';
+      style-src 'self';
       worker-src 'self';
       upgrade-insecure-requests
     # restrict browser features
@@ -76,24 +59,3 @@ spec:
       X-Robots-Tag: "noindex, nofollow, noarchive, nosnippet, notranslate, noimageindex"
       Cross-Origin-Opener-Policy: "same-origin"
       Cross-Origin-Resource-Policy: "same-site"
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: codeserver-webui
-  namespace: codeserver
-spec:
-  entryPoints:
-    - websecure
-  routes:
-    - kind: Rule
-      match: Host(`code.cryogence.io`)
-      services:
-        - name: coder
-          port: 80
-          scheme: http
-      middlewares:
-        - name: headers-code
-          namespace: codeserver
-  tls:
-    secretName: cert-code-io
