@@ -98,10 +98,10 @@ spec:
         - name: unifi-guest
           port: 8880
           scheme: http
-      middlewares: #use same headers but remove auth
+      middlewares:
         - name: headers-wifi
           namespace: unifi
-        #- name: headers-authfwd
-        #  namespace: authentik
+        - name: headers-authfwd
+          namespace: authentik
   tls:
     secretName: cert-guest-io

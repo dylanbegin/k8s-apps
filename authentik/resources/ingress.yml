@@ -15,6 +15,7 @@ spec:
   commonName: "auth.cryogence.io"
   dnsNames:
   - "auth.cryogence.io"
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
