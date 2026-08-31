@@ -23,24 +23,54 @@ metadata:
   namespace: hassos
 spec:
   headers:
-    accessControlAllowMethods: ['GET', 'OPTIONS', 'PUT', 'POST', 'PATCH']
-    accessControlMaxAge: 100
-    browserXssFilter: true
-    contentSecurityPolicy: "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';"
+    # prevent MIME-type sniffing
     contentTypeNosniff: true
-    customFrameOptionsValue: SAMEORIGIN
-    customRequestHeaders:
-      X-Forwarded-Proto: https
-    customResponseHeaders:
-      X-Robots-Tag: none,noarchive,nosnippet,notranslate,noimageindex
-    permissionsPolicy: "camera 'none'; geolocation 'none'; microphone 'none'; payment 'none'; usb 'none'; vr 'none';"
-    forceSTSHeader: true
+    # clickjacking protection
     frameDeny: true
-    sslRedirect: true
+    contentSecurityPolicy: >-
+      base-uri 'self';
+      connect-src 'self';
+      font-src 'self';
+      form-action 'self';
+      frame-ancestors 'none';
+      frame-src 'none';
+      img-src 'self' data:;
+      manifest-src 'self';
+      media-src 'self';
+      object-src 'none';
+      worker-src 'self';
+      upgrade-insecure-requests
+    # restrict browser features
+    # set to (self) as needed.
+    permissionsPolicy: >-
+      accelerometer=(),
+      bluetooth=(),
+      camera=(),
+      geolocation=(),
+      gyroscope=(),
+      interest-cohort=(),
+      magnetometer=(),
+      microphone=(),
+      midi=(),
+      payment=(),
+      picture-in-picture=(),
+      publickey-credentials-get=(),
+      screen-wake-lock=(),
+      serial=(),
+      usb=(),
+      vr=()
+    # dont leak url paths to other origins
+    referrerPolicy: strict-origin-when-cross-origin
+    # hsts configs
+    stsSeconds: 63072000
     stsIncludeSubdomains: true
     stsPreload: true
-    stsSeconds: 15552000
-    referrerPolicy: no-referrer
+    forceSTSHeader: true
+    # block bots
+    customResponseHeaders:
+      X-Robots-Tag: "noindex, nofollow, noarchive, nosnippet, notranslate, noimageindex"
+      Cross-Origin-Opener-Policy: "same-origin"
+      Cross-Origin-Resource-Policy: "same-site"
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -57,10 +87,8 @@ spec:
         - name: hassos
           port: 8123
           scheme: http
-      #middlewares:
-      #  - name: headers-iot
-      #    namespace: hassos
-      #  - name: headers-authfwd
-      #    namespace: authentik
+      middlewares:
+        - name: headers-iot
+          namespace: hassos
   tls:
     secretName: cert-iot-io
