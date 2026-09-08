@@ -1,0 +1,62 @@
+# we need to manually create the ldap outpost due to missing annotation feature:
+# https://github.com/goauthentik/authentik/issues/15730
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ldap-outpost
+  namespace: authentik
+  labels:
+    app: ldap-outpost
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ldap-outpost
+  template:
+    metadata:
+      labels:
+        app: ldap-outpost
+    spec:
+      containers:
+        - image: ghcr.io/goauthentik/ldap:2026.8.0
+          name: proxy
+          ports:
+            - containerPort: 389
+              name: ldap
+              protocol: TCP
+            - containerPort: 636
+              name: ldaps
+              protocol: TCP
+          env:
+            - name: AUTHENTIK_HOST
+              value: "https://auth.cryogence.io/"
+            - name: AUTHENTIK_INSECURE
+              value: "true" #allows port 389?
+            - name: AUTHENTIK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-user
+                  key: authentik-ldap-token
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ldap-outpost
+  namespace: authentik
+  annotations:
+    io.cilium/lb-ipam-ips: "10.10.10.104"
+spec:
+  selector:
+    app: ldap-outpost
+  ports:
+  - name: ldap
+    port: 389
+    protocol: TCP
+    targetPort: ldap
+  - name: ldaps
+    port: 636
+    protocol: TCP
+    targetPort: ldaps
+  type: LoadBalancer
