@@ -33,7 +33,7 @@ spec:
     frameDeny: true
     contentSecurityPolicy: >-
       base-uri 'self';
-      connect-src 'self' https://auth.cryogence.io https://codestats.net;
+      connect-src 'self' https://auth.cryogence.io https://codestats.net https://api.ipgeolocation.io;
       default-src 'self';
       font-src 'self';
       form-action 'self';
