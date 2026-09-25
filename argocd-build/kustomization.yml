@@ -29,3 +29,4 @@ resources:
   - apps/servarr.yml           #1110
   - apps/dashy.yml             #1120
   - apps/whoami.yml            #1130
+  - apps/draw.yml              #1140

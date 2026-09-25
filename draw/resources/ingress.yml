@@ -1,0 +1,94 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cert-draw-io
+  namespace: draw
+spec:
+  secretName: cert-draw-io
+  issuerRef:
+    name: le-prod
+    kind: ClusterIssuer
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 384
+  commonName: "draw.cryogence.io"
+  dnsNames:
+  - "draw.cryogence.io"
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: headers-draw
+  namespace: draw
+spec:
+  headers:
+    # prevent MIME-type sniffing
+    contentTypeNosniff: true
+    # clickjacking protection
+    frameDeny: true
+    contentSecurityPolicy: >-
+      base-uri 'self';
+      connect-src 'self' data:;
+      font-src 'self';
+      form-action 'self';
+      frame-ancestors 'none';
+      frame-src 'none';
+      img-src 'self' data: https:;
+      manifest-src 'self';
+      media-src 'self';
+      object-src 'none';
+      worker-src 'self';
+      upgrade-insecure-requests
+    # restrict browser features
+    # set to (self) as needed.
+    permissionsPolicy: >-
+      accelerometer=(),
+      bluetooth=(),
+      camera=(),
+      geolocation=(),
+      gyroscope=(),
+      interest-cohort=(),
+      magnetometer=(),
+      microphone=(),
+      midi=(),
+      payment=(),
+      picture-in-picture=(),
+      publickey-credentials-get=(),
+      screen-wake-lock=(),
+      serial=(),
+      usb=(),
+      vr=()
+    # dont leak url paths to other origins
+    referrerPolicy: strict-origin-when-cross-origin
+    # hsts configs
+    stsSeconds: 63072000
+    stsIncludeSubdomains: true
+    stsPreload: true
+    forceSTSHeader: true
+    # block bots
+    customResponseHeaders:
+      X-Robots-Tag: "noindex, nofollow, noarchive, nosnippet, notranslate, noimageindex"
+      Cross-Origin-Opener-Policy: "same-origin"
+      Cross-Origin-Resource-Policy: "same-site"
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: draw-webui
+  namespace: draw
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`draw.cryogence.io`)
+      services:
+        - name: draw
+          port: 80
+          scheme: http
+      middlewares:
+        - name: headers-draw
+          namespace: draw
+  tls:
+    secretName: cert-draw-io
