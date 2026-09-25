@@ -90,5 +90,7 @@ spec:
       middlewares:
         - name: headers-draw
           namespace: draw
+        - name: headers-authfwd
+          namespace: authentik
   tls:
     secretName: cert-draw-io
