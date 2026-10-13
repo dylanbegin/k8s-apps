@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homelable-cm-env
+  namespace: homelable
+data:
+  AUTH_MODE: "local"
+  AUTH_USERNAME: "svchomelable"
+  AUTH_PASSWORD_HASH: "$2b$12$ANnP5QMb.dS2BRduT2Zadeqgz6PGJINdJOYxxJ8I7O9p7.rKFuCke"
+  CORS_ORIGINS: "['http://localhost:5173','http://homelable-frontend.homelable.svc.cluster.local:80']"
+  SCANNER_RANGES: "['10.10.10.0/24','10.10.20.0/24']"

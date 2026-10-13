@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homelable-frontend
+  namespace: homelable
+  labels:
+    app: homelable
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: homelable
+  template:
+    metadata:
+      labels:
+        app: homelable
+    spec:
+      containers:
+        - name: homelable-frontend
+          image: ghcr.io/pouzor/homelable-frontend:3.5
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+          env:
+            - name: BACKEND_UPSTREAM
+              value: "homelable-backend.homelable.svc.cluster.local:8000"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 2
+              memory: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homelable
+  namespace: homelable
+spec:
+  selector:
+    app: homelable
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  type: ClusterIP

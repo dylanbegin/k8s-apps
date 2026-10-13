@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: homelable-backend-pvc
+  namespace: homelable
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-ssd
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homelable-backend
+  namespace: homelable
+  labels:
+    app: homelable
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: homelable
+  template:
+    metadata:
+      labels:
+        app: homelable
+    spec:
+      containers:
+        - name: homelable-backend
+          image: ghcr.io/pouzor/homelable-backend:3.5
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - name: homelable-backend
+              mountPath: /app/data
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: homelable
+                  key: homelable-secret-key
+          envFrom:
+            - configMapRef:
+                name: homelable-cm-env
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 1
+              memory: 1Gi
+      volumes:
+        - name: homelable-backend
+          persistentVolumeClaim:
+            claimName: homelable-backend-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homelable-backend
+  namespace: homelable
+spec:
+  selector:
+    app: homelable
+  ports:
+    - name: http
+      port: 8000
+      protocol: TCP
+      targetPort: 8000
+  type: ClusterIP

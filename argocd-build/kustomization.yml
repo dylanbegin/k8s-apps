@@ -30,3 +30,4 @@ resources:
   - apps/dashy.yml             #1120
   - apps/whoami.yml            #1130
   - apps/draw.yml              #1140
+  - apps/homelable.yml         #1150
