@@ -18,7 +18,7 @@ resources:
   - apps/vaultwarden.yml       #1000
   - apps/authentik.yml         #1010
   - apps/gitea.yml             #1020
-  - apps/nextcloud.yml         #1030
+  - apps/filebrowser.yml       #1030
   - apps/snipeit.yml           #1040
   - apps/codeserver.yml        #1050
   - apps/freshrss.yml          #1060

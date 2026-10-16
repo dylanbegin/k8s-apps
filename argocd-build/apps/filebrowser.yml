@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nextcloud
+  name: filebrowser
   namespace: argocd
   labels:
     name: apps
@@ -10,12 +10,12 @@ metadata:
 spec:
   project: production
   source:
-    path: nextcloud
+    path: filebrowser
     repoURL: https://github.com/dylanbegin/k8s-apps.git
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
-    namespace: nextcloud
+    namespace: filebrowser
   syncPolicy:
     automated:
       prune: true

@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebrowser-cm-config
+  namespace: filebrowser
+data:
+  config.yaml: |
+    http:
+      port: 80
+      baseURL:  "/"
+      trustProxyHeaders: true
+    server:
+      logging:
+        - levels: "info|error|warning"
+          apiFilter: 'disabled'
+      cacheDir: /home/filebrowser/data/tmp
+      sources:
+        - path: "/home/filebrowser/data"
+          config:
+            defaultEnabled: false
+        - path: "/storage"
+          config:
+            defaultUserScope: "/users"
+            defaultEnabled: true
+            createUserDir: true
+            defaultPermissions:
+              view: true
+              download: true
+              modify: true
+              delete: true
+              create: true
+      filesystem:
+        createFilePermission: "664"
+    auth:
+      methods:
+        password:
+          enabled: true
+          minLength: 16
+          signup: false
+        oidc:
+          enabled: true
+          issuerUrl: "https://auth.cryogence.io/application/o/filebrowser/"
+          scopes: "email openid profile groups"
+          userIdentifier: "preferred_username"
+          disableVerifyTLS: true
+          createUser: true
+        passkey:
+          enabled: false
+    frontend:
+      name: "Cryogence Drive"
+      oidcLoginButtonText: "Cryogence SSO Login"
+    account:
+      permissions:
+        api: true
+    userDefaults:
+      listing:
+        showHidden: true
+        singleClick: true
+        viewMode: "list"
